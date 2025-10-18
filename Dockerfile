@@ -1,17 +1,17 @@
-# AWS Lambda Container Image for SciTalk Backend
+# AWS Lambda Python 3.11 base image
 FROM public.ecr.aws/lambda/python:3.11
 
-# Copy requirements and install dependencies
-COPY requirements.txt ${LAMBDA_TASK_ROOT}/
-RUN pip install --no-cache-dir -r ${LAMBDA_TASK_ROOT}/requirements.txt
+# Set working directory
+WORKDIR ${LAMBDA_TASK_ROOT}
 
-# Install mangum for FastAPI to Lambda adapter
-RUN pip install --no-cache-dir mangum
+# Copy requirements first (for better caching)
+COPY requirements.txt .
 
-# Copy application code
-COPY app.py ${LAMBDA_TASK_ROOT}/
-COPY lambda_handler.py ${LAMBDA_TASK_ROOT}/
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Set the CMD to your handler
-CMD [ "lambda_handler.lambda_handler" ]
+# Copy application files
+COPY app.py lambda_handler.py ./
 
+# Lambda entrypoint
+CMD ["lambda_handler.lambda_handler"]

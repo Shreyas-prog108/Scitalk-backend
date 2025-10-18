@@ -8,6 +8,9 @@ from dotenv import load_dotenv
 import os
 from typing import Optional
 import tempfile
+from mangum import Mangum
+
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -342,3 +345,5 @@ def detect_command(text: str) -> Optional[str]:
         return "SAFETY_NOTE"
     
     return "GENERAL_SCIENTIFIC"
+# Lambda handler
+handler = Mangum(app)
