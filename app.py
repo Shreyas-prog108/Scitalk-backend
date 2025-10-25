@@ -37,8 +37,8 @@ async def root():
         "version": "1.0.0",
         "status": "online",
         "features": {
-            "transcription": "Groq Whisper v3",
-            "ai_model": "Llama 3.3 70B",
+            "transcription": "Groq Whisper Large v3",
+            "ai_model": "Llama 3.3 70B (via Groq)",
             "capabilities": [
                 "Real-time voice transcription",
                 "Scientific terminology recognition",
@@ -70,7 +70,10 @@ async def root():
         }
     }
 
+# API Keys
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+# Initialize Groq client
 groq_client = GroqClient(api_key=GROQ_API_KEY)
 
 voice_agent = Agent(
@@ -127,9 +130,10 @@ async def transcribe_audio(file: UploadFile = File(...)):
         # Use Groq's Whisper API for transcription
         with open(temp_audio_path, "rb") as audio_file:
             transcription = groq_client.audio.transcriptions.create(
-                file=audio_file,
+                file=(temp_audio_path, audio_file.read()),
                 model="whisper-large-v3",
-                response_format="json"
+                temperature=0,
+                response_format="verbose_json"
             )
         
         # Clean up temp file
@@ -192,9 +196,10 @@ async def demo_test_transcribe():
         # Use the sample audio file for transcription
         with open(audio_path, "rb") as audio_file:
             transcription = groq_client.audio.transcriptions.create(
-                file=audio_file,
+                file=(audio_path, audio_file.read()),
                 model="whisper-large-v3",
-                response_format="json"
+                temperature=0,
+                response_format="verbose_json"
             )
         
         return {
@@ -221,9 +226,10 @@ async def demo_full_workflow():
             # Transcribe the actual audio file
             with open(audio_path, "rb") as audio_file:
                 transcription = groq_client.audio.transcriptions.create(
-                    file=audio_file,
+                    file=(audio_path, audio_file.read()),
                     model="whisper-large-v3",
-                    response_format="json"
+                    temperature=0,
+                    response_format="verbose_json"
                 )
             text = transcription.text
             confidence = 0.95
