@@ -131,7 +131,7 @@ async def transcribe_audio(file: UploadFile = File(...)):
         with open(temp_audio_path, "rb") as audio_file:
             transcription = groq_client.audio.transcriptions.create(
                 file=(temp_audio_path, audio_file.read()),
-                model="whisper-large-v3",
+                model="whisper-large-v3-turbo",
                 temperature=0,
                 response_format="verbose_json"
             )
@@ -197,7 +197,7 @@ async def demo_test_transcribe():
         with open(audio_path, "rb") as audio_file:
             transcription = groq_client.audio.transcriptions.create(
                 file=(audio_path, audio_file.read()),
-                model="whisper-large-v3",
+                model="whisper-large-v3-turbo",
                 temperature=0,
                 response_format="verbose_json"
             )
@@ -227,7 +227,7 @@ async def demo_full_workflow():
             with open(audio_path, "rb") as audio_file:
                 transcription = groq_client.audio.transcriptions.create(
                     file=(audio_path, audio_file.read()),
-                    model="whisper-large-v3",
+                    model="whisper-large-v3-turbo",
                     temperature=0,
                     response_format="verbose_json"
                 )
